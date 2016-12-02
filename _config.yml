@@ -24,7 +24,7 @@ description: Objective baseball analysis
 # List of links in the navigation bar
 navbar-links:
   About Me: "aboutme"
-  Tool I use:
+  Tools I use:
     - R: "https://cran.r-project.org/"
     - RStudio: "http://www.rstudio.com"
     - Tableau public: "http://public.tableau.com"
