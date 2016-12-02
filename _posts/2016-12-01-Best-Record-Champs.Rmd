@@ -1,16 +1,9 @@
 ---
 title: How frequently do MLB teams with best record in regular season become World
   Champions?
-author: "D. Hernandez (@gmbeisbol)"
-date: '2016-11-16'
-output:
-  html_notebook: default
-  html_document: default
-  pdf_document: default
-  word_document: default
-self_contained: no
+date: '2016-12-03'
+output: md_document
 ---
-<img src = "images/HomePlate GM_brown.png" width = "50">
 
 ### Some reasons for this
 
