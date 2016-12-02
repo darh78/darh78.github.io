@@ -1,16 +1,12 @@
 ---
 layout: page
 title: About me
-subtitle: Why you'd want to go on a date with me
+subtitle: Baseball and Analytics, both are my passion!
 ---
 
-My name is Inigo Montoya. I have the following qualities:
+My name is Daniel Hernández and I spend my free time analyzing baseball feats.
+I use [Tableau Public](https://public.tableau.com/s/), [R](https://cran.r-project.org/) and [Circos](www.circos.ca).
 
-- I rock a great mustache
-- I'm extremely loyal to my family
+This is my blog mainly for analysis performed in R.
 
-What else do you need?
-
-### my history
-
-To be honest, I'm having some trouble remembering right now, so why don't you just watch [my movie](http://en.wikipedia.org/wiki/The_Princess_Bride_%28film%29) and it will answer **all** your questions.
+Previous articles on Tableau Public and Circos remain in my previous [blog](http://graficosymetricas.wordpress.com).
