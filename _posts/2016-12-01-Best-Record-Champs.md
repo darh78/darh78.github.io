@@ -230,8 +230,6 @@ sort(table(Best_Champs$Team), decreasing = TRUE)
 
 It seems that the New York Yankees are used to this kind of seasons, as 17 out of their [27 World Series](https://en.wikipedia.org/wiki/List_of_World_Series_champions) titles have occurred when they were the best team in the regular season. The following bar plot shows all these teams with their total of championships in that condition. This has occurred 48 times since 1903.
 
-![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_1-1.png)
-
 The bar plot clearly shows the dominance of the Yankees within this group. Indeed, no other team is near to achieve that level in the short term. On the other hand the Chicago Cubs, with their 2016 championship, has made this (World Champion after having the best record) for the third time in their history (since 1903).
 
 Note that the [Boston Americans](http://www.baseball-reference.com/teams/BOS/) became the Boston RedSox in 1907. Since 1958, the [Brooklyn Dodgers](http://www.baseball-reference.com/teams/LAD/) are the LA Dodgers, and the [NY Giants](http://www.baseball-reference.com/teams/SFG/) are the SF Giants. The Oakland Athletics were the old [Philadelphia Athletics](http://www.baseball-reference.com/teams/OAK/) from 1901 to 1954.
