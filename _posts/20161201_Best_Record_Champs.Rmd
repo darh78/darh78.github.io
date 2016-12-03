@@ -38,26 +38,26 @@ library(svglite)
 
 Using the table called `Teams` (Yearly Stats and Standings) from the [Lahman package](http://lahman.r-forge.r-project.org/), I created a [*tibble*](https://blog.rstudio.org/2016/03/24/tibble-1-0-0/) with a subset of it and called it `TeamsStd` (from Teams Standings).
 I selected just a few columns from the original table. You can check the meaning of each of the selected columns [here](http://lahman.r-forge.r-project.org/doc/).
-```{r}
+```{r data_acq}
 TeamsStd <- tbl_df(Teams) %>%
   select(yearID, lgID, divID, Rank, W, L, DivWin, WCWin, LgWin, WSWin, name, teamIDBR)
 ```
 
 So, printing a summary of the new `TeamsStd` tibble, we have:
-```{r}
+```{r first_summary}
 summary(TeamsStd)
 ```
 
 #### Data manipulation
 
 Fom the summary, it can be seen that `TeamsStd` has info from 1871 up to 2015. Nevertheless, the [World Series started on 1903](https://en.wikipedia.org/wiki/World_Series), so let's subset `TeamsStd` to have the data from 1903 to 2015.
-```{r}
+```{r data_manipulation_1}
 TeamsStd <- TeamsStd %>%
   filter(yearID >= 1903)
 ```
 
 Let's add other variables to the tibble with `Winning-Loss Percentage` (called WLP) and `Total of Games` (called G), and let's order the rows per year based on their `WLP`, in descending order.
-```{r}
+```{r data_manipulation_2}
 TeamsStd <- mutate(TeamsStd,
           WLP = W/(W+L),
           G = W+L) %>%
@@ -65,22 +65,22 @@ TeamsStd <- mutate(TeamsStd,
 ```
 
 Now that the tibble is ordered by year and `WLP`, let's add a new variable with the overall rank (called `OverallRank`) for each team on each regular season, defining number 1 to the team with the best record, 2 for the second one and so on.
-```{r}
+```{r data_manipulation_3}
 TeamsStd <- mutate(TeamsStd,
          OverallRank = ave(WLP, yearID, FUN = seq_along))
 ```
 
 Now `TeamsStd` has the info up to 2015. As the Lahman package is not yet updated with the 2016 data, in order to include the last World Series, I had to look for the 2016 data into [baseball reference](http://www.baseball-reference.com/leagues/MLB/2016-standings.shtml), built an Excel file (called `T2016.xlsx`) with the same variables than `TeamsStd` and then bind them together.
-```{r, include=FALSE}
+```{r including_2016, include=FALSE}
 T2016 <- tbl_df(read_excel("C:/Users/1328/Documents/R projects/Best_Team_Champ/data/T2016.xlsx"))
 ```
 
-```{r}
+```{r joining_tibbles}
 TeamsStd <- rbind(TeamsStd, T2016)
 ```
 
 Additionally, to prepare better `TeamsStd` for the analysis, let's modify some of the `classes` of the variables and give better names to some of them:
-```{r}
+```{r data_cleaning}
 TeamsStd$WLP <- as.numeric(TeamsStd$WLP)
 TeamsStd$yearID <- as.integer(TeamsStd$yearID)
 TeamsStd$Rank <- as.factor(TeamsStd$Rank)
@@ -99,21 +99,21 @@ TeamsStd$Era <- as.factor(TeamsStd$Era)
 
 Now `TeamsStd` has data from 1903 to 2016, which is the period of analysis I want, and from where the exploratory analysis will begin.
 `TeamsStd` has now the following view (subset of the 2016 season).
-```{r}
+```{r tibble_format}
 knitr::kable(TeamsStd %>% slice(2391:2400), caption = "Subset of TeamsStd")
 ```
 
 ### Exploratory Analysis
 
 Let's start by printing again a summary of `TeamsStd`:
-```{r}
+```{r EA_summary}
 summary(TeamsStd)
 ```
 
 #### Some facts from the summary view:
 The maximum wins a team has achieved in a single season is 116.
 Let's see which team was and if it became World Champions that season.
-```{r}
+```{r teams_max_win}
 knitr::kable(TeamsStd %>%
   filter(W == 116) %>%
   select(Season, League, OverallRank, Team, G, W, L, WLP, LgWin, WSWin))
@@ -127,7 +127,7 @@ Curiously, the Chicago Cubs played the World Series `LgWin = Y` but they lost ag
 #### Which are the teams with best record in the regular season and that have won the World Series, since 1903?
 
 To do this, I took a subset of the `TeamsStd` with the teams with the best `WLP` (best record) that became the World Champions (`WSWin = Y`) and save it as a new tibble, called `Best_Champs`.
-```{r}
+```{r WS_champs_br}
 Best_Champs <- TeamsStd %>%
   filter(OverallRank == 1 & WSWin == "Y")
 sort(table(Best_Champs$Team), decreasing = TRUE)
@@ -136,7 +136,7 @@ sort(table(Best_Champs$Team), decreasing = TRUE)
 It seems that the New York Yankees are used to this kind of seasons, as 17 out of their [27 World Series](https://en.wikipedia.org/wiki/List_of_World_Series_champions) titles have occurred when they were the best team in the regular season. 
 The following bar plot shows all these teams with their total of championships in that condition. This has occurred 48 times since 1903.
 
-```{r dev="svg", echo=FALSE, fig.height=5, fig.width=8}
+```{r WS_champs_br_1, echo=FALSE, fig.height=5, fig.width=8}
 Best_Champs <- within(Best_Champs,
                        Team <- factor(Team,
                                       levels = names(sort(table(Team), decreasing = TRUE))))
@@ -165,7 +165,7 @@ Note that the [Boston Americans](http://www.baseball-reference.com/teams/BOS/) b
 The Oakland Athletics were the old [Philadelphia Athletics](http://www.baseball-reference.com/teams/OAK/) from 1901 to 1954.
 
 So redefining the tibble to show the current Franchises, the bar plot can be reorganized to show the total of championships by  current Franchises:
-```{r dev='svg', echo=FALSE, fig.height=5, fig.width=8}
+```{r WS_champs_br_2, dev='svg', echo=FALSE, fig.height=5, fig.width=8}
 Best_Champs$Team <- as.character(Best_Champs$Team)
 Best_Champs$teamIDBR <- as.character(Best_Champs$teamIDBR)
 
