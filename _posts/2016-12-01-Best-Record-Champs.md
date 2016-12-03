@@ -1,3 +1,6 @@
+How frequently do MLB teams with best record in regular season become World Champions?
+======================================================================================
+
 ### Some reasons for this
 
 This year the [Chicago Cubs](http://www.cubs.com) became the MLB *World Series Champions*, defeating the Cleveland Indians in a heartbreaking 7th game of the serie.
@@ -233,13 +236,13 @@ The bar plot clearly shows the dominance of the Yankees within this group. Indee
 
 Note that the [Boston Americans](http://www.baseball-reference.com/teams/BOS/) became the Boston RedSox in 1907. Since 1958, the [Brooklyn Dodgers](http://www.baseball-reference.com/teams/LAD/) are the LA Dodgers, and the [NY Giants](http://www.baseball-reference.com/teams/SFG/) are the SF Giants. The Oakland Athletics were the old [Philadelphia Athletics](http://www.baseball-reference.com/teams/OAK/) from 1901 to 1954.
 
-So redefining the tibble to show the current Franchises, the bar plot can be reorganized to show the total of championships by current Franchises: ![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_2-1.svg)
+So redefining the tibble to show the current Franchises, the bar plot can be reorganized to show the total of championships by current Franchises: ![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_2-1.png)
 
 Boston Red Sox, Oakland Athletics, Cincinnati Reds and Chicago Cubs sum up the same 17 titles of the NY Yankees on those conditions.
 
 #### When do those 48 championships occurred since 1903?
 
-![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_3-1.png)
 
 This plot suggest that this occurred more frequently between 1930 and 1950 than in the last decades. For example in the current century it has occurred just four times, including this year.
 
@@ -273,7 +276,7 @@ On this format the team with best record does not have to play an additional rou
 
 The following image summarizes these formats: \#\#\# ABC
 
-So let's plot again the previous graph but differentiating the Eras: ![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-2-1.png)
+So let's plot again the previous graph but differentiating the Eras: ![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_4-1.png)
 
 From 1903 to 2016, 112 World Series has been celebrated between the National and the American League Champions (there were no WS in 1904 and 1994). **That's equivalent to say that the best team in a regular season became World Champion in 43% of the time (48 out of 112).**.
 
@@ -306,7 +309,7 @@ brt_WS <- ggplot(Best_Champs, aes(x = frID_Era)) +
 brt_WS
 ```
 
-![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 So, in the last two formats (Wild Card Eras), only five times it has occurred being made by only three teams.
 
@@ -369,4 +372,4 @@ Overall_Linegraph
 
     ## Warning: Removed 468 rows containing missing values (geom_point).
 
-![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-4-1.png)
