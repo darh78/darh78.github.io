@@ -9,6 +9,7 @@ output:
 
 # How frequently do MLB teams with best record in regular season become World Champions?
 
+
 ### Some reasons for this
 
 This year the [Chicago Cubs](http://www.cubs.com) became the MLB *World Series Champions*, defeating the Cleveland Indians in a heartbreaking 7th game of the serie.
@@ -140,24 +141,24 @@ It seems that the New York Yankees are used to this kind of seasons, as 17 out o
 The following bar plot shows all these teams with their total of championships in that condition. This has occurred 48 times since 1903.
 
 ```{r WS_champs_br_1, echo=FALSE, fig.height=5, fig.width=8}
-Best_Champs <- within(Best_Champs,
-                       Team <- factor(Team,
-                                      levels = names(sort(table(Team), decreasing = TRUE))))
+#Best_Champs <- within(Best_Champs,
+#                       Team <- factor(Team,
+#                                      levels = names(sort(table(Team), decreasing = TRUE))))
 
-brt_WS <- ggplot(Best_Champs, aes(x = Team)) +
-  geom_bar(stat = "count", fill = "navajowhite4") +
-  geom_text(stat="count", aes(label=..count..), vjust=-.5, size = 3, colour = "gray64") +
-  labs(title = "World Champions Teams with best record",
-       subtitle = "during regular season, since 1903",
-       caption = "Data from Lahman R package 5.0-0",
-       x = "Teams",
-       y = "Championships") +
-  theme_tufte() +
-  theme(axis.text.x=element_text(angle = 60, hjust = 1, vjust = 1, size = 9),
-        axis.text.y=element_blank(),
-        axis.ticks = element_blank())
+#brt_WS <- ggplot(Best_Champs, aes(x = Team)) +
+#  geom_bar(stat = "count", fill = "navajowhite4") +
+#  geom_text(stat="count", aes(label=..count..), vjust=-.5, size = 3, colour = "gray64") +
+#  labs(title = "World Champions Teams with best record",
+#       subtitle = "during regular season, since 1903",
+#       caption = "Data from Lahman R package 5.0-0",
+#       x = "Teams",
+#       y = "Championships") +
+#  theme_tufte() +
+#  theme(axis.text.x=element_text(angle = 60, hjust = 1, vjust = 1, size = 9),
+#        axis.text.y=element_blank(),
+#        axis.ticks = element_blank())
 
-brt_WS
+#brt_WS
 
 ```
 
@@ -261,7 +262,7 @@ This is the current postseason format and the difference with the 1994-2011 era 
 
 On this format the team with best record does not have to play an additional round, so its probability reamins the same, 12.5% as in the previous era.
 
-The following image summarizes these formats: ### ABC
+The following image summarizes these formats:
 
 So let's plot again the previous graph but differentiating the Eras:
 ```{r WS_champs_br_4, echo=FALSE, fig.height=5, fig.width=8}
@@ -303,7 +304,7 @@ length(Champs_BR$Season) / length(WS$Season) * 100
 From 1903 to 2016, 112 World Series has been celebrated between the National and the American League Champions (there were no WS in 1904 and 1994). **That's equivalent to say that the best team in a regular season became World Champion in 43% of the time (48 out of 112).**.
 
 Checking that situation based on the Era, we have:
-```{r, fig.height=5, fig.width=8}
+```{r WS_champs_br_5, fig.height=5, fig.width=8}
 Best_Champs$frID_Era <- with(Best_Champs, paste(FranchID, Era, sep = "_"))
 
 
@@ -330,7 +331,7 @@ brt_WS <- ggplot(Best_Champs, aes(x = frID_Era)) +
 brt_WS
 ```
 
-So, in the last two formats (Wild Card Eras), only five times it has occurred being made by only three teams.
+So, in the last two formats (Wild Card Eras), only five times it has occurred being made by only three teams. 
 
 ```{r, echo=FALSE}
 knitr::kable(Best_Champs %>%
@@ -340,7 +341,7 @@ knitr::kable(Best_Champs %>%
 ```
 
 
-```{r, fig.height=5, fig.width=8}
+```{r WC_Era_results, fig.height=5, fig.width=8}
 
 TeamsStd <- mutate(TeamsStd,
                       FranchID = ifelse(teamIDBR == "ANA" | teamIDBR == "CAL" | teamIDBR == "LAA", "LAA",
