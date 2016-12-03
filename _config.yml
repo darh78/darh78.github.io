@@ -7,6 +7,9 @@
 url: "http://darh78.github.io"
 baseurl: ""
 
+# Encoding
+encoding: UTF-8
+
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
 #baseurl: "/projectname"
@@ -69,7 +72,7 @@ footer-links-active:
   reddit: false
   linkedin: false
   xing: false
-  stackoverflow: true
+  stackoverflow: false
   snapchat: false
   instagram: false
   youtube: false
