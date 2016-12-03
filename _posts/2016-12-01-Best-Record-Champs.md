@@ -274,7 +274,7 @@ This is the current postseason format and the difference with the 1994-2011 era 
 
 On this format the team with best record does not have to play an additional round, so its probability reamins the same, 12.5% as in the previous era.
 
-The following image summarizes these formats: \#\#\# ABC
+The following image summarizes these formats:
 
 So let's plot again the previous graph but differentiating the Eras: ![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_4-1.png)
 
@@ -309,7 +309,7 @@ brt_WS <- ggplot(Best_Champs, aes(x = frID_Era)) +
 brt_WS
 ```
 
-![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_5-1.png)
 
 So, in the last two formats (Wild Card Eras), only five times it has occurred being made by only three teams.
 
@@ -372,4 +372,4 @@ Overall_Linegraph
 
     ## Warning: Removed 468 rows containing missing values (geom_point).
 
-![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WC_Era_results-1.png)
