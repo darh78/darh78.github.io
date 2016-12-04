@@ -1,5 +1,8 @@
-How frequently do MLB teams with best record in regular season become World Champions?
-======================================================================================
+---
+layout: post
+title: How frequently do MLB teams with best record in regular season become World Champions?
+subtitle: TEST
+---
 
 ### Some reasons for this
 
