@@ -202,7 +202,7 @@ knitr::kable(TeamsStd %>%
 
 So, there was not only one team, but two with the highest number of won games during a regular season, from 1903 to 2016. None of both teams could became the World Champions those seasons, as shown in the previous table `WSWin = N`.
 
-Curiously, the Chicago Cubs played the World Series `LgWin = Y` but they lost against the Chicago White Sox on 1906.
+Curiously, the Chicago Cubs played the World Series in 1906 (`LgWin = Y`) but they lost against the Chicago White Sox.
 
 #### Which are the teams with best record in the regular season and that have won the World Series, since 1903?
 
