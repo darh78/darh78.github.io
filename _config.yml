@@ -7,9 +7,6 @@
 url: "http://darh78.github.io"
 baseurl: ""
 
-# Encoding
-encoding: UTF-8
-
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
 #baseurl: "/projectname"
@@ -191,6 +188,9 @@ prose:
 
 gems:
   - jekyll-paginate
+
+# Encoding
+encoding: utf-8
 
 # Beautiful Jekyll / Dean Attali
 # 2fc73a3a967e97599c9763d05e564189
