@@ -1,11 +1,3 @@
----
-title: How frequently do MLB teams with best record in regular season become World
-  Champions?
-layout: post
-subtitle: First post in darh78.github.io
-bigimg: /img/path.jpg
----
-
 How frequently do MLB teams with best record in regular season become World Champions?
 ======================================================================================
 
@@ -238,6 +230,8 @@ sort(table(Best_Champs$Team), decreasing = TRUE)
 
 It seems that the New York Yankees are used to this kind of seasons, as 17 out of their [27 World Series](https://en.wikipedia.org/wiki/List_of_World_Series_champions) titles have occurred when they were the best team in the regular season. The following bar plot shows all these teams with their total of championships in that condition. This has occurred 48 times since 1903.
 
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WS_champs_br_1-1.png)
+
 The bar plot clearly shows the dominance of the Yankees within this group. Indeed, no other team is near to achieve that level in the short term. On the other hand the Chicago Cubs, with their 2016 championship, has made this (World Champion after having the best record) for the third time in their history (since 1903).
 
 Note that the [Boston Americans](http://www.baseball-reference.com/teams/BOS/) became the Boston RedSox in 1907. Since 1958, the [Brooklyn Dodgers](http://www.baseball-reference.com/teams/LAD/) are the LA Dodgers, and the [NY Giants](http://www.baseball-reference.com/teams/SFG/) are the SF Giants. The Oakland Athletics were the old [Philadelphia Athletics](http://www.baseball-reference.com/teams/OAK/) from 1901 to 1954.
@@ -328,50 +322,54 @@ So, in the last two formats (Wild Card Eras), only five times it has occurred be
 |    2016| NL     | 1           | Chicago Cubs     |  103|   58|  0.6400000|
 
 ``` r
-#TeamsStd <- mutate(TeamsStd,
-#                      FranchID = ifelse(teamIDBR == "ANA" | teamIDBR == "CAL" | teamIDBR == "LAA", "LAA",
-#                                        ifelse(teamIDBR == "FLA" | teamIDBR == "MIA", "MIA",
-#                                               ifelse(teamIDBR == "MON" | teamIDBR == "WAS" | teamIDBR == "WSN", "WSN",
-#                                                      ifelse(teamIDBR == "TBD" | teamIDBR == "TBR", "TBR",
-#                                                             teamIDBR)
-#                                               )
-#                                        )
-#                      ),
-#                      clinch_ps = ifelse((DivWin == "Y" | WCWin == "Y") & WSWin == "N", "Clinched Playoff",
-#                                      ifelse(WSWin == "Y", "World Champion", NA))
-#)
+TeamsStd <- mutate(TeamsStd,
+                      FranchID = ifelse(teamIDBR == "ANA" | teamIDBR == "CAL" | teamIDBR == "LAA", "LAA",
+                                        ifelse(teamIDBR == "FLA" | teamIDBR == "MIA", "MIA",
+                                               ifelse(teamIDBR == "MON" | teamIDBR == "WAS" | teamIDBR == "WSN", "WSN",
+                                                      ifelse(teamIDBR == "TBD" | teamIDBR == "TBR", "TBR",
+                                                             teamIDBR)
+                                               )
+                                        )
+                      ),
+                      clinch_ps = ifelse((DivWin == "Y" | WCWin == "Y") & WSWin == "N", "Clinched Playoff",
+                                      ifelse(WSWin == "Y", "World Champion", NA))
+)
   
                    
-#TeamsOverall <- TeamsStd %>%
-#  filter(Season >= 1995)
+TeamsOverall <- TeamsStd %>%
+  filter(Season >= 1995)
 
-#TeamsOverall$OverallRank <- as.integer(TeamsOverall$OverallRank)
+TeamsOverall$OverallRank <- as.integer(TeamsOverall$OverallRank)
 
-#Overall_Linegraph <- ggplot(TeamsOverall, aes(x = Season, y = OverallRank)) +
-#  geom_line(color = "navajowhite4", size = .8) +
-#  geom_point(aes(color = clinch_ps, shape = clinch_ps)) +
-#  guides(color = FALSE) +
-#  scale_shape_manual(c("Clinched Playoff", "World Champion", NA),  
-#                     values = c(21, 19, 1)) +
-#  scale_colour_manual(breaks = c("Clinched Playoff", "World Champion", NA),  
-#                     values = c("darkblue", "darkblue", "navajowhite4")) +
-#  scale_fill_manual(breaks = c("Clinched Playoff", "World Champion", NA),  
-#                     values = c("orange", "orange", NA)) +
-#  scale_y_reverse(breaks = c(1,30)) +
-#  facet_wrap(~ FranchID, ncol = 5) +
-#  labs(title = "Overall rank of MLB teams in regular season",
-#       subtitle = "based on WLP in Wild Card Eras (since 1995)",
-#       caption = "Data from Lahman R package 5.0-0")+
-#  theme_tufte() +
-#  theme(axis.ticks = element_blank(),
-#        panel.grid.major.y = element_line(colour = "gray", linetype = "dotted", size = 0.1),
-#        panel.grid.minor.y = element_blank(),
+Overall_Linegraph <- ggplot(TeamsOverall, aes(x = Season, y = OverallRank)) +
+  geom_line(color = "navajowhite4", size = .8) +
+  geom_point(aes(color = clinch_ps, shape = clinch_ps)) +
+  guides(color = FALSE) +
+  scale_shape_manual(c("Clinched Playoff", "World Champion", NA),  
+                     values = c(21, 19, 1)) +
+  scale_colour_manual(breaks = c("Clinched Playoff", "World Champion", NA),  
+                     values = c("darkblue", "darkblue", "navajowhite4")) +
+  scale_fill_manual(breaks = c("Clinched Playoff", "World Champion", NA),  
+                     values = c("orange", "orange", NA)) +
+  scale_y_reverse(breaks = c(1,30)) +
+  facet_wrap(~ FranchID, ncol = 5) +
+  labs(title = "Overall rank of MLB teams in regular season",
+       subtitle = "based on WLP in Wild Card Eras (since 1995)",
+       caption = "Data from Lahman R package 5.0-0")+
+  theme_tufte() +
+  theme(axis.ticks = element_blank(),
+        panel.grid.major.y = element_line(colour = "gray", linetype = "dotted", size = 0.1),
+        panel.grid.minor.y = element_blank(),
           #panel.grid.minor = element_line(colour = "gray", linetype = "dotted", size = 0.3),
           #panel.grid.major = element_line(colour = "gray", linetype = "dotted", size = 0.1),
-#        strip.text.x = element_text(size = 10, family = "serif", face = "bold", colour = "black", angle = 0),
-#        axis.text.x=element_text(angle = 90, hjust = 0, vjust = 1, size = 7),
-#        axis.text.y=element_text(angle = 0, hjust = 1, vjust = 0.5, size = 6)) +
-#  scale_x_continuous(breaks = seq(1995, 2020, 5))
+        strip.text.x = element_text(size = 10, family = "serif", face = "bold", colour = "black", angle = 0),
+        axis.text.x=element_text(angle = 90, hjust = 0, vjust = 1, size = 7),
+        axis.text.y=element_text(angle = 0, hjust = 1, vjust = 0.5, size = 6)) +
+  scale_x_continuous(breaks = seq(1995, 2020, 5))
 
-#Overall_Linegraph
+Overall_Linegraph
 ```
+
+    ## Warning: Removed 468 rows containing missing values (geom_point).
+
+![](2016-12-01-Best-Record-Champs_files/figure-markdown_github/WC_Era_results-1.png)
