@@ -1,7 +1,8 @@
 ---
 layout: post
 title: How frequently do MLB teams with best record in regular season become World Champions?
-subtitle: TEST
+subtitle: My first post on darh78.github.io
+bigimg: /img/path.jpg
 ---
 
 ### Some reasons for this
