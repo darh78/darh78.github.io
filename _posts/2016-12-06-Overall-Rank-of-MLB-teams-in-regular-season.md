@@ -98,7 +98,7 @@ Overall_Linegraph <- ggplot(Teams_data, aes(x = Season, y = OverallRank)) +
 Overall_Linegraph
 ```
 
-![](Overall_Linegraph.png)
+![](https://darh78.github.io/2016-12-06-Overall-Rank-of-MLB-teams-in-regular-season/Overall_Linegraph.png)
 
 ``` r
 ggsave(file="Overall_Linegraph.svg", plot=Overall_Linegraph, width=8, height=5)
