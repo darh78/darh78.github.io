@@ -98,7 +98,7 @@ Overall_Linegraph <- ggplot(Teams_data, aes(x = Season, y = OverallRank)) +
 Overall_Linegraph
 ```
 
-![](/ranking_sparklines-1.jpg)
+![](ranking_sparklines-1.jpg)
 
 ``` r
 ggsave(file="Overall_Linegraph.svg", plot=Overall_Linegraph, width=8, height=5)
