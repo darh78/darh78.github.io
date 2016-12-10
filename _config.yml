@@ -117,7 +117,7 @@ paginate: 5
 kramdown:
   input: GFM
   
-enconding: UTF-8
+enconding: "UTF-8"
 
 # Default YAML values (more information on Jekyll's site)
 defaults:
