@@ -40,7 +40,7 @@ By the time of building this article, the R Lahman Package (in version 5.0-0) di
 
 ``` r
 # get 2016 data from baseball-reference
-library(readxl)  # To read Excel files into R 
+library(readxl)  # To read Excel files into R
 
 T2016 <- tbl_df(read_excel("C:/Users/1328/Documents/R projects/darh78.github.io/data/T2016.xlsx"))
 
