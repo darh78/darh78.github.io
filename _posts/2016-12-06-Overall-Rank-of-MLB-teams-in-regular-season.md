@@ -6,7 +6,7 @@ Loading needed packages
 
 ``` r
 # Loading packages
- library(Lahman)  # To get the data
+ library(Lahman)  # Data source
  library(dplyr)   # To ease the data manipulation
 ```
 
@@ -40,7 +40,7 @@ By the time of building this article, the R Lahman Package (in version 5.0-0) di
 
 ``` r
 # get 2016 data from baseball-reference
-library(readxl)  # To read into R Excel files
+library(readxl)  # To read Excel files into R 
 
 T2016 <- tbl_df(read_excel("C:/Users/1328/Documents/R projects/darh78.github.io/data/T2016.xlsx"))
 
@@ -59,7 +59,8 @@ Teams_data <- mutate(Teams_data,
                                                              teamIDBR)
                                                )
                                         )
-                      ))
+                      )
+                  )
 ```
 
 Additionally, to better prepare `Teams_data` for the analysis, let's modify some of the `classes` of the variables and give better names to some of them:
@@ -76,32 +77,19 @@ Teams_data <- Teams_data %>% rename(Season = yearID, Team = name)
 Having the tibble on this state:
 
 ``` r
-knitr::kable(Teams_data %>% slice(c(1:2, 100:101, 300:310, 500:505)))
+Teams_data %>% slice(c(1, 100, 200, 300, 400, 500))
 ```
 
-|  Season| Team                  | teamIDBR |    W|    L| DivWin | WCWin | WSWin |        WLP|  OverallRank| FranchID |
-|-------:|:----------------------|:---------|----:|----:|:-------|:------|:------|----------:|------------:|:---------|
-|    1994| Montreal Expos        | MON      |   74|   40| NA     | NA    | NA    |  0.6491228|            1| WSN      |
-|    1994| New York Yankees      | NYY      |   70|   43| NA     | NA    | NA    |  0.6194690|            2| NYY      |
-|    1997| Milwaukee Brewers     | MIL      |   78|   83| N      | N     | N     |  0.4844720|           16| MIL      |
-|    1997| Boston Red Sox        | BOS      |   78|   84| N      | N     | N     |  0.4814815|           17| BOS      |
-|    2004| Minnesota Twins       | MIN      |   92|   70| Y      | N     | N     |  0.5679012|            8| MIN      |
-|    2004| Oakland Athletics     | OAK      |   91|   71| N      | N     | N     |  0.5617284|            9| OAK      |
-|    2004| San Francisco Giants  | SFG      |   91|   71| N      | N     | N     |  0.5617284|           10| SFG      |
-|    2004| Chicago Cubs          | CHC      |   89|   73| N      | N     | N     |  0.5493827|           11| CHC      |
-|    2004| Texas Rangers         | TEX      |   89|   73| N      | N     | N     |  0.5493827|           12| TEX      |
-|    2004| San Diego Padres      | SDP      |   87|   75| N      | N     | N     |  0.5370370|           13| SDP      |
-|    2004| Philadelphia Phillies | PHI      |   86|   76| N      | N     | N     |  0.5308642|           14| PHI      |
-|    2004| Chicago White Sox     | CHW      |   83|   79| N      | N     | N     |  0.5123457|           15| CHW      |
-|    2004| Florida Marlins       | FLA      |   83|   79| N      | N     | N     |  0.5123457|           16| MIA      |
-|    2004| Cleveland Indians     | CLE      |   80|   82| N      | N     | N     |  0.4938272|           17| CLE      |
-|    2004| Baltimore Orioles     | BAL      |   78|   84| N      | N     | N     |  0.4814815|           18| BAL      |
-|    2010| Arizona Diamondbacks  | ARI      |   65|   97| N      | N     | N     |  0.4012346|           28| ARI      |
-|    2010| Seattle Mariners      | SEA      |   61|  101| N      | N     | N     |  0.3765432|           29| SEA      |
-|    2010| Pittsburgh Pirates    | PIT      |   57|  105| N      | N     | N     |  0.3518519|           30| PIT      |
-|    2011| Philadelphia Phillies | PHI      |  102|   60| Y      | N     | N     |  0.6296296|            1| PHI      |
-|    2011| New York Yankees      | NYY      |   97|   65| Y      | N     | N     |  0.5987654|            2| NYY      |
-|    2011| Milwaukee Brewers     | MIL      |   96|   66| Y      | N     | N     |  0.5925926|            3| MIL      |
+    ## # A tibble: 6 × 11
+    ##   Season                 Team teamIDBR     W     L DivWin WCWin WSWin
+    ##    <int>                <chr>    <chr> <int> <int>  <chr> <chr> <chr>
+    ## 1   1994       Montreal Expos      MON    74    40   <NA>  <NA>  <NA>
+    ## 2   1997    Milwaukee Brewers      MIL    78    83      N     N     N
+    ## 3   2000       Montreal Expos      MON    67    95      N     N     N
+    ## 4   2004      Minnesota Twins      MIN    92    70      Y     N     N
+    ## 5   2007  St. Louis Cardinals      STL    78    84      N     N     N
+    ## 6   2010 Arizona Diamondbacks      ARI    65    97      N     N     N
+    ## # ... with 3 more variables: WLP <dbl>, OverallRank <int>, FranchID <chr>
 
 Before ploting anything, let's see a summary of the variables: So, printing a summary of the new `TeamsStd` tibble, we have:
 
@@ -188,7 +176,7 @@ And let's add those results to the previous plot.
 ``` r
 Linegraph_ps <- ggplot(Teams_data, aes(x = Season, y = OverallRank)) +
   geom_line(color = "cadetblue3", size = .8) +
-  geom_point(aes(color = clinch, shape = clinch, fill = clinch)) +
+  geom_point(aes(color = clinch, shape = clinch, fill = clinch), alpha = 0.9) +
   guides(fill = FALSE) +
   scale_shape_manual(name = "Regular season result",
                      breaks = c("Clinched Playoff", "World Champ"),
@@ -226,13 +214,17 @@ Linegraph_ps
 #ggsave(file="Overall_Linegraph.png", plot=Overall_Linegraph, width=8, height=5)
 ```
 
+Note: There was no Postseason in 1994.
+
 ``` r
-Overall_histograph <- ggplot(Teams_data) +
-  geom_histogram(mapping = aes(x = OverallRank), binwidth = 1, color = "cadetblue3") +
+Teams_Champs <- Teams_data %>%
+  filter(WSWin == "Y")
+
+Histo_Rank_Champs <- ggplot(Teams_Champs) +
+  geom_histogram(mapping = aes(x = OverallRank), binwidth = 1, fill = "lightskyblue4", color = "darkblue") +
   guides(color = FALSE) +
-  facet_wrap(~ FranchID, ncol = 5) +
-  labs(title = "Overall rank of MLB teams in regular season",
-       subtitle = "based on WLP in Wild Card Era (since 1995)",
+  labs(title = "Regular season overall rank of World Series Champs",
+       subtitle = "Wild Card Era (since 1995)",
        caption = "Data from Lahman R package 5.0-0") +
   theme_tufte() +
   theme(axis.ticks = element_blank(),
@@ -241,9 +233,9 @@ Overall_histograph <- ggplot(Teams_data) +
         strip.text.x = element_text(size = 10, family = "serif", face = "bold", colour = "black", angle = 0),
         axis.text.x=element_text(angle = 0, hjust = 1, vjust = 1, size = 7),
         axis.text.y=element_text(angle = 0, hjust = 1, vjust = 0.5, size = 6)) +
-  scale_x_continuous(breaks = c(1, 10, 20, 30))
+  scale_x_continuous(breaks = c(1:13))
 
-Overall_histograph
+Histo_Rank_Champs
 ```
 
-![](2016-12-06-Overall-Rank-of-MLB-teams-in-regular-season_files/figure-markdown_github/ranking_histo-1.png)
+![](2016-12-06-Overall-Rank-of-MLB-teams-in-regular-season_files/figure-markdown_github/rank_champs-1.png)
