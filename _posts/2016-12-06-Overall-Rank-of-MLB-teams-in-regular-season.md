@@ -239,3 +239,6 @@ Histo_Rank_Champs
 ```
 
 ![](2016-12-06-Overall-Rank-of-MLB-teams-in-regular-season_files/figure-markdown_github/rank_champs-1.png)
+
+
+Hello
