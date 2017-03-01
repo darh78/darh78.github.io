@@ -1,0 +1,425 @@
+---
+title: "Venezolanos en MLB - Bateo - Líderes de por vida"
+output: html_notebook
+---
+
+Los siguientes gráficos utilizan esta [página](http://www.baseball-reference.com/bio/Venezuela_born.shtml) de baseball-reference como fuente de datos.
+
+Los gráficos visam mostrar los jugadores Venezolanos en [MLB](http://www.mlb.com) que lideran, de por vida y entre criollos, los departamentos ofensivos.
+
+Los colores en los gráficos representan:
+
+- Gris: Jugadores retirados o que no jugaron en la última temporada (2016),
+
+- Azul: Jugadores activos o que jugaron en la última temporada (2016).
+
+```{r Actualizacion, echo=FALSE}
+paste("Actualizado en: ",today("GMT"), sep = "")
+```
+
+```{r loading_pckg, message=FALSE, warning=FALSE, include=FALSE}
+# Loading packages
+Sys.setlocale("LC_TIME","English")
+library(XML)
+library(tidyverse)
+library(lubridate)
+library(highcharter)
+```
+
+```{r getting_data, include= FALSE}
+# getting the data from Baseball Reference for Venezuelan Players
+urlbbref_ven <- "http://www.baseball-reference.com/bio/Venezuela_born.shtml"
+
+classes_Bat <- c("integer", "character", rep("integer", 17),
+             rep("numeric", 4), "factor", "factor",
+             "character", "character")
+
+
+Bat_Ven <- readHTMLTable(urlbbref_ven,
+                         which = 1,
+                         colClasses = classes_Bat)
+
+rm(list= ls()[!(ls() %in% c("Bat_Ven"))])
+```
+
+```{r inputs, include=FALSE}
+Season <- 2016   # Temporada actual
+n <- 10          # Top n mostrado en los gráficos
+Bat_stats <- c("Yrs", "G", "AB", "R", "H", "X2B", "X3B", "HR", "RBI", "SB", "BB", "SO", "BA", "OBP", "SLG", "OPS", "ASG") # Batting stats to plot
+
+min_VaB <- 1000
+```
+
+```{r data_cleaning, include=FALSE}
+## Changing the types of some variables in the data frames
+
+### Bat
+Bat_Ven$Name <- as.character(Bat_Ven$Name)
+Bat_Ven$Birthdate <- mdy(Bat_Ven$Birthdate)
+Bat_Ven$Debut <- mdy(Bat_Ven$Debut)
+Bat_Ven$Birthplace <- as.character(Bat_Ven$Birthplace)
+Bat_Ven$Pos <- as.character(Bat_Ven$Pos)
+names(Bat_Ven)[names(Bat_Ven) == "2B"] <- "X2B"
+names(Bat_Ven)[names(Bat_Ven) == "3B"] <- "X3B"
+Bat_Ven <- Bat_Ven %>%
+  separate(Birthplace, into = c("City", "State"), sep = ", ")
+Bat_Ven <- tbl_df(Bat_Ven)
+Bat_Ven <- Bat_Ven %>%
+  mutate(Active = ifelse(To == Season, "Activo", "Retirado"),
+         Coloract = ifelse(Active == "Activo", "#36648B", "#838B8B"))
+
+```
+
+```{r subsetting_by_stat, include = FALSE}
+
+### Seasons
+Bat_Ven %>%
+  top_n(n, Yrs) %>%
+  arrange(desc(Yrs), G) -> Top_Yrs
+
+### Games
+Bat_Ven %>%
+  top_n(n, G) %>%
+  arrange(desc(G)) -> Top_G
+
+### Runs
+Bat_Ven %>%
+  top_n(n, R) %>%
+  arrange(desc(R)) -> Top_R
+
+### Hits
+Bat_Ven %>%
+  top_n(n, H) %>%
+  arrange(desc(H)) -> Top_H
+
+### Doubles
+Bat_Ven %>%
+  top_n(n, X2B) %>%
+  arrange(desc(X2B)) -> Top_X2B
+
+### Triples
+Bat_Ven %>%
+  top_n(n, X3B) %>%
+  arrange(desc(X3B)) -> Top_X3B
+
+### Home Runs
+Bat_Ven %>%
+  top_n(n, HR) %>%
+  arrange(desc(HR)) -> Top_HR
+
+### Runs Batted In
+Bat_Ven %>%
+  top_n(n, RBI) %>%
+  arrange(desc(RBI)) -> Top_RBI
+
+### Stolen Bases
+Bat_Ven %>%
+  top_n(n, SB) %>%
+  arrange(desc(SB)) -> Top_SB
+
+### Base on balls
+Bat_Ven %>%
+  top_n(n, BB) %>%
+  arrange(desc(BB)) -> Top_BB
+
+### Strikeouts
+Bat_Ven %>%
+  top_n(n, SO) %>%
+  arrange(desc(SO)) -> Top_SO
+
+### Batting Average
+Bat_Ven %>%
+  filter(AB >= min_VaB) %>%
+  top_n(n, BA) %>%
+  arrange(desc(BA)) -> Top_BA
+
+### On Base Pctg
+Bat_Ven %>%
+  filter(AB >= min_VaB) %>%
+  top_n(n, OBP) %>%
+  arrange(desc(OBP)) -> Top_OBP
+
+### Slugging
+Bat_Ven %>%
+  filter(AB >= min_VaB) %>%
+  top_n(n, SLG) %>%
+  arrange(desc(SLG)) -> Top_SLG
+
+### OPS
+Bat_Ven %>%
+  filter(AB >= min_VaB) %>%
+  top_n(n, OPS) %>%
+  arrange(desc(OPS)) -> Top_OPS
+
+### All Star Games
+Bat_Ven %>%
+  top_n(n, ASG) %>%
+  arrange(desc(ASG)) -> Top_ASG
+```
+
+```{r Seasons, echo=FALSE}
+### Seasons
+highchart() %>%
+  hc_add_series(Top_Yrs, "column", hcaes(x = Name, y = Yrs, color = Coloract), name = "Temporadas", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Temporadas (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "Yrs")) %>%
+  hc_xAxis(categories = Top_Yrs$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Games, echo=FALSE}
+### Games
+highchart() %>%
+  hc_add_series(Top_G, "column", hcaes(x = Name, y = G, color = Coloract), name = "Juegos", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Juegos (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "G")) %>%
+  hc_xAxis(categories = Top_G$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Runs, echo=FALSE}
+### Runs
+highchart() %>%
+  hc_add_series(Top_R, "column", hcaes(x = Name, y = R, color = Coloract), name = "Carreras anotadas", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Carreras anotadas (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "R")) %>%
+  hc_xAxis(categories = Top_R$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Hits, echo=FALSE}
+### Hits
+highchart() %>%
+  hc_add_series(Top_H, "column", hcaes(x = Name, y = H, color = Coloract), name = "Hits", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Hits (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "H")) %>%
+  hc_xAxis(categories = Top_H$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Doubles, echo=FALSE}
+### Doubles
+highchart() %>%
+  hc_add_series(Top_X2B, "column", hcaes(x = Name, y = X2B, color = Coloract), name = "Dobles", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Dobles (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "2B")) %>%
+  hc_xAxis(categories = Top_X2B$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Triples, echo=FALSE}
+### Triples
+highchart() %>%
+  hc_add_series(Top_X3B, "column", hcaes(x = Name, y = X3B, color = Coloract), name = "Triples", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Triples (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "3B")) %>%
+  hc_xAxis(categories = Top_X3B$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Home_runs, echo=FALSE}
+### Home Runs
+highchart() %>%
+  hc_add_series(Top_HR, "column", hcaes(x = Name, y = HR, color = Coloract), name = "Home Runs", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Home Runs (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "HR")) %>%
+  hc_xAxis(categories = Top_HR$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r RBI, echo=FALSE}
+### RBI
+highchart() %>%
+  hc_add_series(Top_RBI, "column", hcaes(x = Name, y = RBI, color = Coloract), name = "Carreras impulsadas", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Carreras impulsadas (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "RBI")) %>%
+  hc_xAxis(categories = Top_RBI$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Stolen_Bases, echo=FALSE}
+### Stolen Bases
+highchart() %>%
+  hc_add_series(Top_SB, "column", hcaes(x = Name, y = SB, color = Coloract), name = "Bases robadas", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Bases robadas (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "SB")) %>%
+  hc_xAxis(categories = Top_SB$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Base_on_Balls, echo=FALSE}
+### Base on Balls
+highchart() %>%
+  hc_add_series(Top_BB, "column", hcaes(x = Name, y = BB, color = Coloract), name = "Bases por bolas", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Bases por bolas (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "BB")) %>%
+  hc_xAxis(categories = Top_BB$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Strikeouts, echo=FALSE}
+### Strikeouts
+highchart() %>%
+  hc_add_series(Top_SO, "column", hcaes(x = Name, y = SO, color = Coloract), name = "Ponches", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Ponches (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "SO")) %>%
+  hc_xAxis(categories = Top_SO$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Batting_Avg, echo=FALSE}
+### Batting Average
+highchart() %>%
+  hc_add_series(Top_BA, "column", hcaes(x = Name, y = BA, color = Coloract), name = "Average", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Promedio de bateo (Top ", n, ") - Mín ", min_VaB, " turnos al bate", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "AVG")) %>%
+  hc_xAxis(categories = Top_BA$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r On_Base_Pctg, echo=FALSE}
+### On Base Pctg
+highchart() %>%
+  hc_add_series(Top_OBP, "column", hcaes(x = Name, y = OBP, color = Coloract), name = "OBP", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Promedio de embasado (Top ", n, ") - Mín ", min_VaB, " turnos al bate", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "OBP")) %>%
+  hc_xAxis(categories = Top_OBP$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r Slugging, echo=FALSE}
+### Slugging
+highchart() %>%
+  hc_add_series(Top_SLG, "column", hcaes(x = Name, y = SLG, color = Coloract), name = "Slugging", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Slugging (Top ", n, ") - Mín ", min_VaB, " turnos al bate", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "SLG")) %>%
+  hc_xAxis(categories = Top_SLG$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r OPS, echo=FALSE}
+### OPS
+highchart() %>%
+  hc_add_series(Top_OPS, "column", hcaes(x = Name, y = OPS, color = Coloract), name = "OPS", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("OPS (Top ", n, ") - Mín ", min_VaB, " turnos al bate", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "OPS")) %>%
+  hc_xAxis(categories = Top_OPS$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+```{r ASG, echo=FALSE}
+### All-Star Games
+highchart() %>%
+  hc_add_series(Top_ASG, "column", hcaes(x = Name, y = ASG, color = Coloract), name = "Juegos de Estrellas", showInLegend = FALSE) %>%
+  hc_add_theme(hc_theme_smpl()) %>%
+  hc_title(text = paste("Juegos de Estrella (Top ", n, ")", sep = ""), style = list(fontSize = "22px")) %>%
+  hc_subtitle(text = "Venezolanos en MLB - Líderes de por vida", style = list(fontSize = "12px")) %>%
+  hc_yAxis(title = list(text = "ASG")) %>%
+  hc_xAxis(categories = Top_ASG$Name) %>%
+  hc_xAxis(title = list(text = "Jugador")) %>%
+  hc_credits(enabled = TRUE, # add credits
+             text = "@gmbeisbol. Fuente: http://www.baseball-reference.com/bio/Venezuela_born.shtml. R package: highcharter") %>%
+  hc_tooltip(crosshairs = FALSE, backgroundColor = "#DDDEE6",
+             shared = FALSE, borderWidth = 2)
+```
+
+
+
+
+
+
+
+
+
+
+
